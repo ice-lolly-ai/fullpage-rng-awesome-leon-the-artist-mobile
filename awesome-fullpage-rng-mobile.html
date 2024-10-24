@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Random Number Grid (100x100)</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            background-color: #222;
+            overflow: hidden;
+        }
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(100, 1fr);
+            grid-template-rows: repeat(100, 1fr);
+            width: 100vw;
+            height: 100vh;
+        }
+        .cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            color: black;
+            font-size: calc(0.5vmin);
+            font-family: Arial, sans-serif;
+            border: 1px solid #444;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div id="grid"></div>
+    <script>
+        const gridElement = document.getElementById('grid');
+        let isRunning = true;
+        let interval;
+
+        // Create the 100x100 grid cells
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < 10000; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            fragment.appendChild(cell);
+        }
+        gridElement.appendChild(fragment);
+
+        const generateRandomNumbers = () => {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                cell.textContent = Math.floor(Math.random() * 10);
+            });
+        };
+
+        const startGenerating = () => {
+            if (!interval) {
+                interval = setInterval(generateRandomNumbers, 50); // Adjust speed if needed
+            }
+        };
+
+        const stopGenerating = () => {
+            clearInterval(interval);
+            interval = null;
+        };
+
+        // Toggle generation on touch or click
+        const toggleGeneration = () => {
+            if (isRunning) {
+                stopGenerating();
+            } else {
+                startGenerating();
+            }
+            isRunning = !isRunning;
+        };
+
+        // Improved touch event handling
+        document.body.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent unwanted default actions like zooming
+            toggleGeneration();
+        }, { passive: false });
+
+        // Fallback for desktop click events
+        document.body.addEventListener('click', toggleGeneration);
+
+        // Start generating numbers initially
+        startGenerating();
+    </script>
+</body>
+</html>
